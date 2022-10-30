@@ -66,13 +66,17 @@ const database = {
     });
   },
   delete(statement) {
-    const regExp = /^delete from ([a-zA-Z]+) where (.+)/;
+    const regExp = /^delete from ([a-zA-Z]+)(?: where (.+))?/;
     const result = statement.match(regExp);
-    const [, tableName, clauseWhere] = result;
-    const [columnWhere, valueWhere] = clauseWhere.split(" = ");
-    this.tables[tableName].data = this.tables[tableName].data.filter(
-      (row) => row[columnWhere] !== valueWhere
-    );
+    const [, tableName, whereClause] = result;
+    if (whereClause) {
+      const [columnWhere, valueWhere] = whereClause.split(" = ");
+      this.tables[tableName].data = this.tables[tableName].data.filter(
+        (row) => row[columnWhere] !== valueWhere
+      );
+    } else {
+      this.tables[tableName].data = [];
+    }
     return this;
   },
   execute(statement) {
