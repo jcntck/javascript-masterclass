@@ -12,17 +12,15 @@ const Parser = function () {
   ]);
 
   this.parse = function (statement) {
-    for (command of this.commands) {
-      const [method, regExp] = command;
+    for (let [command, regExp] of this.commands) {
       const parsedStatement = statement.match(regExp);
       if (parsedStatement) {
         return {
-          command: method,
+          command,
           parsedStatement,
         };
       }
     }
-    throw new DatabaseError(statement);
   };
 };
 
@@ -90,8 +88,12 @@ const database = {
     return this;
   },
   execute(statement) {
-    const { command, parsedStatement } = this.parser.parse(statement);
-    return this[command](parsedStatement);
+    try {
+      const { command, parsedStatement } = this.parser.parse(statement);
+      return this[command](parsedStatement);
+    } catch (error) {
+      throw new DatabaseError(statement);
+    }
   },
 };
 
