@@ -1,8 +1,18 @@
-const languages = ["Python", "C", "Java"];
-console.log(languages);
+const values = [
+  {
+    name: "John",
+    surname: "Doe",
+  },
+  {
+    name: "John",
+    surname: "Doe",
+  },
+  {
+    name: "Foe",
+    surname: "Lham",
+  },
+];
 
-languages.sort(() => -1);
-console.log(languages);
+const persons = new Set(values);
 
-languages.sort(() => -1);
-console.log(languages);
+console.log(persons);
