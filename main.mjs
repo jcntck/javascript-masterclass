@@ -1,12 +1,12 @@
 import Database from "./database.mjs";
 
-let database = new Database();
-database
-  .execute(
-    "create table author (id number, name string, age number, city string, state string, country string)"
-  )
-  .then(() =>
-    Promise.all([
+(async function () {
+  try {
+    const database = new Database();
+    await database.execute(
+      "create table author (id number, name string, age number, city string, state string, country string)"
+    );
+    await Promise.all([
       database.execute(
         "insert into author (id, name, age) values (1, Douglas Crockford, 62)"
       ),
@@ -16,15 +16,13 @@ database
       database.execute(
         "insert into author (id, name, age) values (3, Martin Fowler, 54)"
       ),
-    ]).then(() =>
-      database
-        .execute("select name, age from author")
-        .then((data) => console.log(toJSON(data)))
-    )
-  )
-  .catch((error) => console.log(error.message));
-
-// database.execute("delete from author where id = 2");
+    ]);
+    const result = await database.execute("select name, age from author");
+    console.log(toJSON(result));
+  } catch (error) {
+    console.log(error.message);
+  }
+})();
 
 function toJSON(object) {
   return JSON.stringify(object, undefined, 2);
