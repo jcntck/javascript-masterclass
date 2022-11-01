@@ -1,34 +1,7 @@
-class DatabaseError {
-  constructor(statement) {
-    this.statement = statement;
-    this.message = `Syntax error: '${this.statement}'`;
-  }
-}
+import { DatabaseError } from "./database-error.mjs";
+import { Parser } from "./parser.mjs";
 
-class Parser {
-  constructor() {
-    this.commands = new Map([
-      ["createTable", /^create table ([a-zA-Z]+) \((.+)\)/],
-      ["insert", /^insert into ([a-zA-Z]+) \((.+)\) values \((.+)\)/],
-      ["select", /^select (.+) from ([a-zA-Z]+)(?: where (.+))?/],
-      ["delete", /^delete from ([a-zA-Z]+)(?: where (.+))?/],
-    ]);
-  }
-
-  parse(statement) {
-    for (let [command, regExp] of this.commands) {
-      const parsedStatement = statement.match(regExp);
-      if (parsedStatement) {
-        return {
-          command,
-          parsedStatement,
-        };
-      }
-    }
-  }
-}
-
-class Database {
+export class Database {
   constructor() {
     this.tables = {};
     this.parser = new Parser();
@@ -106,31 +79,4 @@ class Database {
       throw new DatabaseError(statement);
     }
   }
-}
-
-try {
-  let database = new Database();
-  database.execute(
-    "create table author (id number, name string, age number, city string, state string, country string)"
-  );
-  database.execute(
-    "insert into author (id, name, age) values (1, Douglas Crockford, 62)"
-  );
-  database.execute(
-    "insert into author (id, name, age) values (2, Linus Torvalds, 47)"
-  );
-  database.execute(
-    "insert into author (id, name, age) values (3, Martin Fowler, 54)"
-  );
-  database.execute("delete from author where id = 2");
-  console.log(
-    JSON.stringify(
-      database.execute("select name, age from author"),
-      undefined,
-      2
-    )
-  );
-  // console.log(JSON.stringify(database, null, 2));
-} catch (error) {
-  console.error(error.message);
 }
