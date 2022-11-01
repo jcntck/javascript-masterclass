@@ -72,11 +72,15 @@ export default class Database {
   }
 
   execute(statement) {
-    try {
-      const { command, parsedStatement } = this.parser.parse(statement);
-      return this[command](parsedStatement);
-    } catch (error) {
-      throw new DatabaseError(statement);
-    }
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        try {
+          const { command, parsedStatement } = this.parser.parse(statement);
+          resolve(this[command](parsedStatement));
+        } catch (error) {
+          reject(new DatabaseError(statement));
+        }
+      }, 1000);
+    });
   }
 }
