@@ -1,4 +1,4 @@
-import { Database } from "./database.mjs";
+import Database from "./database.mjs";
 
 try {
   let database = new Database();

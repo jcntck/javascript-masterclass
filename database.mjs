@@ -1,7 +1,7 @@
-import { DatabaseError } from "./database-error.mjs";
-import { Parser } from "./parser.mjs";
+import DatabaseError from "./databaseError.mjs";
+import Parser from "./parser.mjs";
 
-export class Database {
+export default class Database {
   constructor() {
     this.tables = {};
     this.parser = new Parser();
